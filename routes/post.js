@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const post = require('../controllers/post')
 const auth = require('../middleware/auth')
-const multer = require('multer');
+
 const upload = require('../config/multerConfig');
 
 router.route('/posts')
@@ -10,7 +10,7 @@ router.route('/posts')
 
 
 router.route('/post/:id')
-    .patch(auth, post.updatePost)
+    .patch(auth,upload.any(), post.updatePost)
     .get(auth, post.getPost)
     .delete(auth, post.deletePost)  // done
 
