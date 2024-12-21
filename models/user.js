@@ -9,9 +9,8 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(Comment, { foreignKey: 'userId', as: 'comments' });
       this.hasMany(Message, { foreignKey: 'senderId', as: 'sentMessages' });
       this.belongsToMany(Conversation, { through: 'UserConversations', foreignKey: 'userId', as: 'conversations' });
-      
-      
-      // Self-referential many-to-many relationships for followers and following
+
+      // Self-referential many-to-many relationships
       this.belongsToMany(User, { as: 'followers', through: 'userfollowers', foreignKey: 'followingId' });
       this.belongsToMany(User, { as: 'following', through: 'userfollowers', foreignKey: 'followerId' });
     }
@@ -48,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notNull: { msg: 'User must have a username' },
           notEmpty: { msg: 'Username must not be empty' },
-          len: [6, 100],
+          len: [6, 50],
           is: {
             args: /^[a-zA-Z0-9_]+$/,
             msg: 'Username must only contain letters, numbers, and underscores',
@@ -64,12 +63,9 @@ module.exports = (sequelize, DataTypes) => {
           notEmpty: { msg: 'Email must not be empty' },
           isEmail: { msg: 'Must be a valid email address' },
         },
-        unique: true,
-        indexes: [{ unique: true }],
       },
       role: {
-        type: DataTypes.STRING,
-        allowNull: true,
+        type: DataTypes.ENUM('user', 'admin', 'moderator'),
         defaultValue: 'user',
       },
       gender: {
@@ -91,11 +87,10 @@ module.exports = (sequelize, DataTypes) => {
       },
       avatar: {
         type: DataTypes.TEXT,
-        defaultValue: null,
         allowNull: true,
       },
       saved: {
-        type: DataTypes.ARRAY(DataTypes.INTEGER),
+        type: DataTypes.JSON,
         defaultValue: [],
         allowNull: true,
       },
@@ -104,6 +99,7 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       tableName: 'users',
       modelName: 'User',
+      timestamps: true,
     }
   );
 
