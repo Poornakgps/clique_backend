@@ -72,6 +72,12 @@ module.exports = (sequelize, DataTypes) => {
       gender: {
         type: DataTypes.STRING,
         allowNull: false,
+        validate: {
+          isIn: {
+            args: [['male', 'female', 'non-binary', 'other']],
+            msg: 'Gender must be one of male, female, non-binary, or other',
+          },
+        },
       },
       story: {
         type: DataTypes.STRING,
